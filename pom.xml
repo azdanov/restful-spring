@@ -55,6 +55,10 @@
       <version>0.9.1</version>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+    </dependency>
+    <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <exclusions>
         <exclusion>
@@ -74,7 +78,7 @@
     <artifactId>spring-boot-starter-parent</artifactId>
     <groupId>org.springframework.boot</groupId>
     <relativePath/>
-    <version>2.2.0.RELEASE</version> <!-- lookup parent from repository -->
+    <version>2.2.0.RELEASE</version>
   </parent>
   <properties>
     <java.version>13</java.version>
