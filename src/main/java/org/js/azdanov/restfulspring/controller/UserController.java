@@ -1,8 +1,10 @@
 package org.js.azdanov.restfulspring.controller;
 
+import org.js.azdanov.restfulspring.exceptions.UserServiceException;
 import org.js.azdanov.restfulspring.service.UserService;
 import org.js.azdanov.restfulspring.shared.dto.UserDto;
 import org.js.azdanov.restfulspring.ui.model.request.UserDetailsRequestModel;
+import org.js.azdanov.restfulspring.ui.model.response.ErrorMessages;
 import org.js.azdanov.restfulspring.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ public class UserController {
       path = "/{userId}",
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public UserRest getUser(@PathVariable String userId) {
+    if (true) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
     UserRest userRest = new UserRest();
     UserDto userDto = userService.getUserByUserId(userId);
     BeanUtils.copyProperties(userDto, userRest);
