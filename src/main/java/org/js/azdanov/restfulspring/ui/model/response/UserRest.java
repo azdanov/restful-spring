@@ -3,11 +3,8 @@ package org.js.azdanov.restfulspring.ui.model.response;
 public class UserRest {
 
   private String userId;
-
   private String firstName;
-
   private String lastName;
-
   private String email;
 
   public String getUserId() {
