@@ -3,9 +3,7 @@ package org.js.azdanov.restfulspring.service.impl;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.js.azdanov.restfulspring.exceptions.UserServiceException;
 import org.js.azdanov.restfulspring.io.entity.UserEntity;
 import org.js.azdanov.restfulspring.io.repository.UserRepository;
@@ -13,7 +11,7 @@ import org.js.azdanov.restfulspring.service.UserService;
 import org.js.azdanov.restfulspring.shared.Utils;
 import org.js.azdanov.restfulspring.shared.dto.UserDto;
 import org.js.azdanov.restfulspring.ui.model.response.ErrorMessages;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.User;
@@ -23,12 +21,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
-  UserRepository userRepository;
-  Utils utils;
-  BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final UserRepository userRepository;
+  private final Utils utils;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final ModelMapper modelMapper;
 
   @Override
   public UserDto createUser(UserDto userDto) {
@@ -38,8 +36,7 @@ public class UserServiceImpl implements UserService {
       throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
     }
 
-    UserEntity userEntity = new UserEntity();
-    BeanUtils.copyProperties(userDto, userEntity);
+    UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
 
     String publicUserId = utils.generateUserId(30);
     userEntity.setUserId(publicUserId);
@@ -47,10 +44,7 @@ public class UserServiceImpl implements UserService {
 
     UserEntity savedUserEntity = userRepository.save(userEntity);
 
-    UserDto savedUserDto = new UserDto();
-    BeanUtils.copyProperties(savedUserEntity, savedUserDto);
-
-    return savedUserDto;
+    return modelMapper.map(savedUserEntity, UserDto.class);
   }
 
   @Override
@@ -61,10 +55,7 @@ public class UserServiceImpl implements UserService {
       throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
     }
 
-    UserDto userDto = new UserDto();
-    BeanUtils.copyProperties(userEntity, userDto);
-
-    return userDto;
+    return modelMapper.map(userEntity, UserDto.class);
   }
 
   @Override
@@ -75,9 +66,7 @@ public class UserServiceImpl implements UserService {
       throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
     }
 
-    UserDto userDto = new UserDto();
-    BeanUtils.copyProperties(userEntity, userDto);
-    return userDto;
+    return modelMapper.map(userEntity, UserDto.class);
   }
 
   @Override
@@ -90,11 +79,9 @@ public class UserServiceImpl implements UserService {
 
     userEntity.setFirstName(userDto.getFirstName());
     userEntity.setLastName(userDto.getLastName());
-
     UserEntity updatedUserDetails = userRepository.save(userEntity);
-    UserDto updatedUserDto = new UserDto();
-    BeanUtils.copyProperties(updatedUserDetails, updatedUserDto);
-    return updatedUserDto;
+
+    return modelMapper.map(updatedUserDetails, UserDto.class);
   }
 
   @Override
@@ -122,12 +109,7 @@ public class UserServiceImpl implements UserService {
     List<UserEntity> userEntities = usersPage.getContent();
 
     return userEntities.stream()
-        .map(
-            userEntity -> {
-              var userDto = new UserDto();
-              BeanUtils.copyProperties(userEntity, userDto);
-              return userDto;
-            })
+        .map(userEntity -> modelMapper.map(userEntity, UserDto.class))
         .collect(Collectors.toList());
   }
 

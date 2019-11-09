@@ -2,9 +2,7 @@ package org.js.azdanov.restfulspring.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.js.azdanov.restfulspring.service.UserService;
 import org.js.azdanov.restfulspring.shared.dto.UserDto;
 import org.js.azdanov.restfulspring.ui.model.request.UserDetailsRequestModel;
@@ -12,7 +10,7 @@ import org.js.azdanov.restfulspring.ui.model.response.OperationStatusModel;
 import org.js.azdanov.restfulspring.ui.model.response.RequestOperationName;
 import org.js.azdanov.restfulspring.ui.model.response.RequestOperationStatus;
 import org.js.azdanov.restfulspring.ui.model.response.UserRest;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("users")
 @AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
 
-  UserService userService;
+  private final UserService userService;
+  private final ModelMapper modelMapper;
 
   @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public List<UserRest> getUsers(
@@ -39,12 +37,7 @@ public class UserController {
     List<UserDto> userDtos = userService.getUsers(page, limit);
 
     return userDtos.stream()
-        .map(
-            userDto -> {
-              UserRest userRest = new UserRest();
-              BeanUtils.copyProperties(userDto, userRest);
-              return userRest;
-            })
+        .map(userDto -> modelMapper.map(userDto, UserRest.class))
         .collect(Collectors.toList());
   }
 
@@ -52,22 +45,20 @@ public class UserController {
       path = "/{userId}",
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public UserRest getUser(@PathVariable String userId) {
-    UserRest userRest = new UserRest();
     UserDto userDto = userService.getUserByUserId(userId);
-    BeanUtils.copyProperties(userDto, userRest);
-    return userRest;
+
+    return modelMapper.map(userDto, UserRest.class);
   }
 
   @PostMapping(
       consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
-    UserDto userDto = new UserDto();
-    BeanUtils.copyProperties(userDetails, userDto);
+    UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+
     UserDto createdUser = userService.createUser(userDto);
-    UserRest userRest = new UserRest();
-    BeanUtils.copyProperties(createdUser, userRest);
-    return userRest;
+
+    return modelMapper.map(createdUser, UserRest.class);
   }
 
   @PutMapping(
@@ -76,12 +67,10 @@ public class UserController {
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public UserRest updateUser(
       @PathVariable String userId, @RequestBody UserDetailsRequestModel userDetails) {
-    UserDto userDto = new UserDto();
-    BeanUtils.copyProperties(userDetails, userDto);
+    UserDto userDto = modelMapper.map(userDetails, UserDto.class);
     UserDto updatedUser = userService.updateUser(userId, userDto);
-    UserRest userRest = new UserRest();
-    BeanUtils.copyProperties(updatedUser, userRest);
-    return userRest;
+
+    return modelMapper.map(updatedUser, UserRest.class);
   }
 
   @DeleteMapping(
@@ -94,6 +83,7 @@ public class UserController {
     userService.deleteUser(userId);
 
     statusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+
     return statusModel;
   }
 }

@@ -1,22 +1,19 @@
 package org.js.azdanov.restfulspring.shared.dto;
 
-import java.io.Serializable;
-import lombok.AccessLevel;
+import java.util.List;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDto implements Serializable {
+public class UserDto {
 
-  private static final long serialVersionUID = 1985343299534060426L;
-  long id;
-  String userId;
-  String firstName;
-  String lastName;
-  String email;
-  String password;
-  String encryptedPassword;
-  String emailVerificationToken;
-  boolean emailVerificationStatus = false;
+  private long id;
+  private String userId;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String password;
+  private String encryptedPassword;
+  private String emailVerificationToken;
+  private boolean emailVerificationStatus = false;
+  private List<AddressDto> addresses;
 }

@@ -1,15 +1,14 @@
 package org.js.azdanov.restfulspring.ui.model.request;
 
-import lombok.AccessLevel;
+import java.util.List;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDetailsRequestModel {
 
-  String firstName;
-  String lastName;
-  String email;
-  String password;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String password;
+  private List<AddressRequestModel> addresses;
 }
