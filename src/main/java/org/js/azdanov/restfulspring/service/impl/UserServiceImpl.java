@@ -3,6 +3,9 @@ package org.js.azdanov.restfulspring.service.impl;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.js.azdanov.restfulspring.exceptions.UserServiceException;
 import org.js.azdanov.restfulspring.io.entity.UserEntity;
 import org.js.azdanov.restfulspring.io.repository.UserRepository;
@@ -11,7 +14,6 @@ import org.js.azdanov.restfulspring.shared.Utils;
 import org.js.azdanov.restfulspring.shared.dto.UserDto;
 import org.js.azdanov.restfulspring.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.User;
@@ -20,21 +22,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
-  private UserRepository userRepository;
-
-  private Utils utils;
-
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-  @Autowired
-  public UserServiceImpl(
-      UserRepository userRepository, Utils utils, BCryptPasswordEncoder bCryptPasswordEncoder) {
-    this.userRepository = userRepository;
-    this.utils = utils;
-    this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-  }
+  UserRepository userRepository;
+  Utils utils;
+  BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Override
   public UserDto createUser(UserDto userDto) {

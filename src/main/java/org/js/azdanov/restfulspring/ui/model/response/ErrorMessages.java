@@ -1,5 +1,9 @@
 package org.js.azdanov.restfulspring.ui.model.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
 public enum ErrorMessages {
   MISSING_REQUIRED_FIELD("Missing required field. Please check documentation for required fields"),
   RECORD_ALREADY_EXISTS("Record already exists"),
@@ -10,17 +14,5 @@ public enum ErrorMessages {
   COULD_NOT_DELETE_RECORD("Could not delete record"),
   EMAIL_ADDRESS_NOT_VERIFIED("Email address could not be verified");
 
-  private String errorMessage;
-
-  ErrorMessages(String message) {
-    this.errorMessage = message;
-  }
-
-  public String getErrorMessage() {
-    return errorMessage;
-  }
-
-  void setErrorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
-  }
+  @Getter private final String errorMessage;
 }

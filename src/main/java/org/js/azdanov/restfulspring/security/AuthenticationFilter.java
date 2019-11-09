@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.js.azdanov.restfulspring.SpringApplicationContext;
 import org.js.azdanov.restfulspring.service.UserService;
 import org.js.azdanov.restfulspring.shared.dto.UserDto;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
@@ -34,6 +36,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     try {
       UserLoginRequestModel loginRequestModel =
           new ObjectMapper().readValue(request.getInputStream(), UserLoginRequestModel.class);
+      log.info("Logging in: {}", loginRequestModel.getEmail());
       return authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(
               loginRequestModel.getEmail(), loginRequestModel.getPassword(), List.of()));

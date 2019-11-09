@@ -1,35 +1,14 @@
 package org.js.azdanov.restfulspring.ui.model.response;
 
 import java.util.Date;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class ErrorMessage {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ErrorMessage extends RuntimeException {
 
-  private Date timestamp;
-  private String message;
-
-  public ErrorMessage() {
-    super();
-  }
-
-  public ErrorMessage(Date timestamp, String message) {
-    super();
-    this.timestamp = timestamp;
-    this.message = message;
-  }
-
-  public Date getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(Date timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
+  private static final long serialVersionUID = -8727704235960510598L;
+  private final Date timestamp;
+  private final String message;
 }
