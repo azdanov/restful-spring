@@ -1,7 +1,8 @@
 package org.js.azdanov.restfulspring.controller;
 
+import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.js.azdanov.restfulspring.service.UserService;
 import org.js.azdanov.restfulspring.shared.dto.UserDto;
@@ -11,6 +12,7 @@ import org.js.azdanov.restfulspring.ui.model.response.RequestOperationName;
 import org.js.azdanov.restfulspring.ui.model.response.RequestOperationStatus;
 import org.js.azdanov.restfulspring.ui.model.response.UserRest;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,15 +38,14 @@ public class UserController {
       @RequestParam(value = "limit", defaultValue = "2") int limit) {
     List<UserDto> userDtos = userService.getUsers(page, limit);
 
-    return userDtos.stream()
-        .map(userDto -> modelMapper.map(userDto, UserRest.class))
-        .collect(Collectors.toList());
+    Type listType = new TypeToken<List<UserRest>>() {}.getType();
+    return modelMapper.map(userDtos, listType);
   }
 
   @GetMapping(
       path = "/{userId}",
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-  public UserRest getUser(@PathVariable String userId) {
+  public UserRest getUser(@PathVariable UUID userId) {
     UserDto userDto = userService.getUserByUserId(userId);
 
     return modelMapper.map(userDto, UserRest.class);
@@ -66,7 +67,7 @@ public class UserController {
       consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public UserRest updateUser(
-      @PathVariable String userId, @RequestBody UserDetailsRequestModel userDetails) {
+      @PathVariable UUID userId, @RequestBody UserDetailsRequestModel userDetails) {
     UserDto userDto = modelMapper.map(userDetails, UserDto.class);
     UserDto updatedUser = userService.updateUser(userId, userDto);
 
@@ -76,12 +77,11 @@ public class UserController {
   @DeleteMapping(
       path = "/{userId}",
       produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-  public OperationStatusModel deleteUser(@PathVariable String userId) {
-    OperationStatusModel statusModel = new OperationStatusModel();
-    statusModel.setOperationName(RequestOperationName.DELETE.name());
-
+  public OperationStatusModel deleteUser(@PathVariable UUID userId) {
     userService.deleteUser(userId);
 
+    OperationStatusModel statusModel = new OperationStatusModel();
+    statusModel.setOperationName(RequestOperationName.DELETE.name());
     statusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
 
     return statusModel;

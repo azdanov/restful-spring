@@ -12,9 +12,9 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class AppExceptionsHandler {
 
-  @ExceptionHandler(value = {UserServiceException.class})
+  @ExceptionHandler(value = {ServiceException.class})
   public ResponseEntity<Object> handleUserServiceException(
-      UserServiceException exception, WebRequest request) {
+      ServiceException exception, WebRequest request) {
     ErrorMessage errorMessage = new ErrorMessage(new Date(), exception.getMessage());
 
     return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);

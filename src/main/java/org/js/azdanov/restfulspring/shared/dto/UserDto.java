@@ -1,13 +1,14 @@
 package org.js.azdanov.restfulspring.shared.dto;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.Data;
 
 @Data
 public class UserDto {
 
   private long id;
-  private String userId;
+  private UUID userId;
   private String firstName;
   private String lastName;
   private String email;

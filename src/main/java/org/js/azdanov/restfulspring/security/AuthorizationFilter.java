@@ -38,21 +38,23 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
   private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
     String token = request.getHeader(SecurityConstants.HEADER_STRING);
 
-    if (Objects.nonNull(token)) {
-      token = token.replace(SecurityConstants.TOKEN_PREFIX, "");
-
-      String user =
-          Jwts.parser()
-              .setSigningKey(SecurityConstants.getTokenSecret())
-              .parseClaimsJws(token)
-              .getBody()
-              .getSubject();
-
-      if (Objects.nonNull(user)) {
-        return new UsernamePasswordAuthenticationToken(user, null, List.of());
-      }
+    if (Objects.isNull(token)) {
+      return null;
     }
 
-    return null;
+    token = token.replace(SecurityConstants.TOKEN_PREFIX, "");
+
+    String user =
+        Jwts.parser()
+            .setSigningKey(SecurityConstants.getTokenSecret())
+            .parseClaimsJws(token)
+            .getBody()
+            .getSubject();
+
+    if (Objects.isNull(user)) {
+      return null;
+    }
+
+    return new UsernamePasswordAuthenticationToken(user, null, List.of());
   }
 }

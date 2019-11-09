@@ -1,17 +1,15 @@
-package org.js.azdanov.restfulspring.shared.dto;
+package org.js.azdanov.restfulspring.ui.model.response;
 
 import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class AddressDto {
+public class AddressRest {
 
-  private long id;
   private UUID addressId;
   private String city;
   private String country;
   private String streetName;
   private String postalCode;
   private String type;
-  private UserDto userDetails;
 }
